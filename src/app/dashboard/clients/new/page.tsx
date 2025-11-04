@@ -161,10 +161,13 @@ export default function NewClientPage() {
                               onBlur={field.onBlur}
                               disabled={isPending}
                             >
-                               <Input
+                              {(inputProps: any) => (
+                                <Input
+                                  {...inputProps}
                                   ref={field.ref}
                                   placeholder="00.000.000/0000-00"
                                 />
+                              )}
                             </InputMask>
                           </FormControl>
                           <FormMessage />
@@ -186,10 +189,13 @@ export default function NewClientPage() {
                               onBlur={field.onBlur}
                               disabled={isPending}
                             >
-                               <Input
+                              {(inputProps: any) => (
+                                <Input
+                                  {...inputProps}
                                   ref={field.ref}
                                   placeholder="(11) 98765-4321"
                                 />
+                              )}
                             </InputMask>
                         </FormControl>
                         <FormMessage />
