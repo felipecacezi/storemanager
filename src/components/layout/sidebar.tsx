@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building, Home, Users, Settings, FileText, LogOut, PanelLeft } from "lucide-react";
+import { Building, Home, Users, Settings, FileText, Truck } from "lucide-react";
 
 import {
-  Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarMenu,
@@ -13,18 +12,16 @@ import {
   SidebarMenuItem,
   SidebarFooter,
   SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "../ui/button";
 import { LogoutButton } from "../auth/logout-button";
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { isMobile } = useSidebar();
   
   const menuItems = [
     { href: "/dashboard", label: "Início", icon: Home },
     { href: "/dashboard/clients", label: "Clientes", icon: Users },
+    { href: "/dashboard/suppliers", label: "Fornecedores", icon: Truck },
     { href: "/dashboard/reports", label: "Relatórios", icon: FileText },
     { href: "/dashboard/settings", label: "Configurações", icon: Settings },
   ];
