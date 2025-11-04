@@ -52,6 +52,7 @@ type Product = {
   id: number;
   name: string;
   description: string;
+  costPrice: number;
   price: number;
   stock: number;
   status: 'Ativo' | 'Inativo';
@@ -62,6 +63,7 @@ const initialProducts: Product[] = [
     id: 1,
     name: 'Notebook Pro',
     description: 'Notebook de alta performance para profissionais.',
+    costPrice: 5000.00,
     price: 7500.00,
     stock: 15,
     status: 'Ativo',
@@ -70,6 +72,7 @@ const initialProducts: Product[] = [
     id: 2,
     name: 'Mouse Sem Fio',
     description: 'Mouse ergonômico com conexão bluetooth.',
+    costPrice: 80.00,
     price: 150.00,
     stock: 120,
     status: 'Ativo',
@@ -78,6 +81,7 @@ const initialProducts: Product[] = [
     id: 3,
     name: 'Teclado Mecânico',
     description: 'Teclado com switches blue para gamers e desenvolvedores.',
+    costPrice: 300.00,
     price: 450.00,
     stock: 0,
     status: 'Inativo',
@@ -124,6 +128,7 @@ export default function ProductsPage() {
           {product.name}
           <div className="text-xs text-muted-foreground">{product.description}</div>
         </TableCell>
+        <TableCell>{formatPrice(product.costPrice)}</TableCell>
         <TableCell>{formatPrice(product.price)}</TableCell>
         <TableCell>{product.stock}</TableCell>
         <TableCell>
@@ -156,6 +161,19 @@ export default function ProductsPage() {
       </TableRow>
     ))
   }
+
+  const renderTableHeader = () => (
+     <TableRow>
+        <TableHead>Nome</TableHead>
+        <TableHead>Preço de Custo</TableHead>
+        <TableHead>Preço de Venda</TableHead>
+        <TableHead>Estoque</TableHead>
+        <TableHead>Status</TableHead>
+        <TableHead>
+        <span className="sr-only">Ações</span>
+        </TableHead>
+    </TableRow>
+  )
 
   return (
     <>
@@ -214,15 +232,7 @@ export default function ProductsPage() {
               <CardContent>
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Preço</TableHead>
-                      <TableHead>Estoque</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>
-                        <span className="sr-only">Ações</span>
-                      </TableHead>
-                    </TableRow>
+                    {renderTableHeader()}
                   </TableHeader>
                   <TableBody>
                      {renderProductRows(products)}
@@ -247,15 +257,7 @@ export default function ProductsPage() {
               <CardContent>
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Preço</TableHead>
-                      <TableHead>Estoque</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>
-                        <span className="sr-only">Ações</span>
-                      </TableHead>
-                    </TableRow>
+                    {renderTableHeader()}
                   </TableHeader>
                   <TableBody>
                      {renderProductRows(filteredProducts('Ativo'))}
@@ -280,15 +282,7 @@ export default function ProductsPage() {
               <CardContent>
                 <Table>
                   <TableHeader>
-                    <TableRow>
-                      <TableHead>Nome</TableHead>
-                      <TableHead>Preço</TableHead>
-                      <TableHead>Estoque</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>
-                        <span className="sr-only">Ações</span>
-                      </TableHead>
-                    </TableRow>
+                    {renderTableHeader()}
                   </TableHeader>
                   <TableBody>
                      {renderProductRows(filteredProducts('Inativo'))}

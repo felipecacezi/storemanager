@@ -38,7 +38,8 @@ import {
 const ProductSchema = z.object({
   name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
   description: z.string().optional(),
-  price: z.coerce.number().min(0.01, { message: "O preço deve ser maior que zero." }),
+  costPrice: z.coerce.number().min(0, { message: "O preço de custo não pode ser negativo." }),
+  price: z.coerce.number().min(0.01, { message: "O preço de venda deve ser maior que zero." }),
   stock: z.coerce.number().min(0, { message: "O estoque não pode ser negativo." }),
   status: z.enum(["Ativo", "Inativo"]),
 });
@@ -53,6 +54,7 @@ export default function NewProductPage() {
     defaultValues: {
       name: "",
       description: "",
+      costPrice: 0,
       price: 0,
       stock: 0,
       status: "Ativo",
@@ -137,10 +139,29 @@ export default function NewProductPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <FormField
                         control={form.control}
+                        name="costPrice"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Preço de Custo (R$)</FormLabel>
+                            <FormControl>
+                                <Input
+                                type="number"
+                                placeholder="50.00"
+                                {...field}
+                                disabled={isPending}
+                                step="0.01"
+                                />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                     <FormField
+                        control={form.control}
                         name="price"
                         render={({ field }) => (
                             <FormItem>
-                            <FormLabel>Preço (R$)</FormLabel>
+                            <FormLabel>Preço de Venda (R$)</FormLabel>
                             <FormControl>
                                 <Input
                                 type="number"
@@ -154,6 +175,8 @@ export default function NewProductPage() {
                             </FormItem>
                         )}
                         />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <FormField
                         control={form.control}
                         name="stock"
@@ -173,28 +196,28 @@ export default function NewProductPage() {
                             </FormItem>
                         )}
                         />
+                    <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Status</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isPending}>
+                                <FormControl>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Selecione o status do produto" />
+                                </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                <SelectItem value="Ativo">Ativo</SelectItem>
+                                <SelectItem value="Inativo">Inativo</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
                 </div>
-                <FormField
-                    control={form.control}
-                    name="status"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Status</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isPending}>
-                            <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Selecione o status do produto" />
-                            </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                            <SelectItem value="Ativo">Ativo</SelectItem>
-                            <SelectItem value="Inativo">Inativo</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
 
                 <div className="flex justify-end gap-2">
                     <Button variant="outline" asChild>
