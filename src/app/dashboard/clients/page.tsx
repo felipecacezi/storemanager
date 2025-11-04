@@ -1,12 +1,13 @@
 'use client';
 
+import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   File,
   ListFilter,
   MoreHorizontal,
   PlusCircle,
-  MessageCircle
+  MessageCircle,
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -37,9 +38,138 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
+type Client = {
+  id: number;
+  name: string;
+  contact: {
+    phone: string;
+    isWhatsapp: boolean;
+    email: string;
+  };
+  cnpjCpf: string;
+  status: 'Ativo' | 'Inativo';
+};
+
+const initialClients: Client[] = [
+  {
+    id: 1,
+    name: 'Liam Johnson',
+    contact: {
+      phone: '(11) 98877-6655',
+      isWhatsapp: true,
+      email: 'liam@example.com',
+    },
+    cnpjCpf: '12.345.678/0001-99',
+    status: 'Ativo',
+  },
+  {
+    id: 2,
+    name: 'Olivia Smith',
+    contact: {
+      phone: '(11) 98877-6655',
+      isWhatsapp: false,
+      email: 'olivia@example.com',
+    },
+    cnpjCpf: '123.456.789-00',
+    status: 'Ativo',
+  },
+  {
+    id: 3,
+    name: 'Noah Williams',
+    contact: {
+      phone: '(11) 98877-6655',
+      isWhatsapp: true,
+      email: 'noah@example.com',
+    },
+    cnpjCpf: '98.765.432/0001-11',
+    status: 'Inativo',
+  },
+];
+
 
 export default function ClientsPage() {
+  const [clients, setClients] = useState<Client[]>(initialClients);
+  const [clientToInactivate, setClientToInactivate] = useState<Client | null>(null);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
+  const handleInactivateClick = (client: Client) => {
+    setClientToInactivate(client);
+    setIsAlertOpen(true);
+  };
+
+  const handleInactivateConfirm = () => {
+    if (clientToInactivate) {
+      setClients(clients.map(c => 
+        c.id === clientToInactivate.id ? { ...c, status: 'Inativo' } : c
+      ));
+    }
+    setIsAlertOpen(false);
+    setClientToInactivate(null);
+  };
+
+  const filteredClients = (status: 'Ativo' | 'Inativo' | 'all') => {
+    if (status === 'all') return clients;
+    return clients.filter(client => client.status === status);
+  }
+
+  const renderClientRows = (clientList: Client[]) => {
+    return clientList.map((client) => (
+       <TableRow key={client.id}>
+        <TableCell className="font-medium">
+          {client.name}
+        </TableCell>
+        <TableCell>
+          <div className="flex items-center gap-2">
+            {client.contact.phone}
+            {client.contact.isWhatsapp && <MessageCircle className="h-4 w-4 text-green-500" />}
+          </div>
+          <div className="text-xs text-muted-foreground">{client.contact.email}</div>
+        </TableCell>
+        <TableCell>{client.cnpjCpf}</TableCell>
+        <TableCell>
+          <Badge variant={client.status === 'Ativo' ? 'outline' : 'destructive'}>{client.status}</Badge>
+        </TableCell>
+        <TableCell>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                aria-haspopup="true"
+                size="icon"
+                variant="ghost"
+              >
+                <MoreHorizontal className="h-4 w-4" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+              <DropdownMenuItem>Editar</DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleInactivateClick(client)}
+                className="text-destructive"
+              >
+                Excluir
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </TableCell>
+      </TableRow>
+    ))
+  }
+
   return (
+    <>
     <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
       <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
         <Tabs defaultValue="all">
@@ -106,114 +236,79 @@ export default function ClientsPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <TableRow>
-                      <TableCell className="font-medium">
-                        Liam Johnson
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          (11) 98877-6655
-                          <MessageCircle className="h-4 w-4 text-green-500" />
-                        </div>
-                         <div className="text-xs text-muted-foreground">liam@example.com</div>
-                      </TableCell>
-                      <TableCell>12.345.678/0001-99</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Ativo</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                            <DropdownMenuItem>Excluir</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                     <TableRow>
-                      <TableCell className="font-medium">
-                        Olivia Smith
-                      </TableCell>
-                       <TableCell>
-                        <div>(11) 98877-6655</div>
-                         <div className="text-xs text-muted-foreground">olivia@example.com</div>
-                      </TableCell>
-                      <TableCell>123.456.789-00</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">Ativo</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                            <DropdownMenuItem>Excluir</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                     <TableRow>
-                      <TableCell className="font-medium">
-                        Noah Williams
-                      </TableCell>
-                       <TableCell>
-                         <div className="flex items-center gap-2">
-                           (11) 98877-6655
-                          <MessageCircle className="h-4 w-4 text-green-500" />
-                        </div>
-                         <div className="text-xs text-muted-foreground">noah@example.com</div>
-                      </TableCell>
-                      <TableCell>98.765.432/0001-11</TableCell>
-                      <TableCell>
-                        <Badge variant="destructive">Inativo</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              aria-haspopup="true"
-                              size="icon"
-                              variant="ghost"
-                            >
-                              <MoreHorizontal className="h-4 w-4" />
-                              <span className="sr-only">Toggle menu</span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuItem>Editar</DropdownMenuItem>
-                            <DropdownMenuItem>Excluir</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
+                     {renderClientRows(clients)}
                   </TableBody>
                 </Table>
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Mostrando <strong>1-3</strong> de <strong>3</strong> clientes
+                  Mostrando <strong>1-{clients.length}</strong> de <strong>{clients.length}</strong> clientes
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+           <TabsContent value="active">
+             <Card>
+              <CardHeader>
+                <CardTitle>Clientes Ativos</CardTitle>
+                <CardDescription>
+                  Lista de todos os clientes com status ativo.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Contato</TableHead>
+                      <TableHead>CNPJ/CPF</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>
+                        <span className="sr-only">Ações</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {renderClientRows(filteredClients('Ativo'))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter>
+                <div className="text-xs text-muted-foreground">
+                  Mostrando <strong>{filteredClients('Ativo').length}</strong> clientes ativos.
+                </div>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+           <TabsContent value="inactive">
+             <Card>
+              <CardHeader>
+                <CardTitle>Clientes Inativos</CardTitle>
+                <CardDescription>
+                  Lista de todos os clientes com status inativo.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Contato</TableHead>
+                      <TableHead>CNPJ/CPF</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>
+                        <span className="sr-only">Ações</span>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                     {renderClientRows(filteredClients('Inativo'))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+              <CardFooter>
+                 <div className="text-xs text-muted-foreground">
+                  Mostrando <strong>{filteredClients('Inativo').length}</strong> clientes inativos.
                 </div>
               </CardFooter>
             </Card>
@@ -221,5 +316,24 @@ export default function ClientsPage() {
         </Tabs>
       </main>
     </div>
+     <AlertDialog open={isAlertOpen} onOpenChange={setIsAlertOpen}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Esta ação irá inativar o cliente{' '}
+            <span className="font-semibold">{clientToInactivate?.name}</span>. 
+            Você poderá reativá-lo depois, se necessário.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setIsAlertOpen(false)}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handleInactivateConfirm}>
+            Sim, inativar
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }
