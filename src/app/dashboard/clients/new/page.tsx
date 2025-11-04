@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, User, Mail, Phone, Home, ChevronLeft, FileText } from "lucide-react";
+import InputMask from 'react-input-mask';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -46,6 +47,7 @@ const ClientSchema = z.object({
 
 export default function NewClientPage() {
   const [isPending, startTransition] = React.useTransition();
+  const [cnpjCpfMask, setCnpjCpfMask] = React.useState("999.999.999-999");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -74,6 +76,17 @@ export default function NewClientPage() {
       router.push("/dashboard/clients");
     });
   };
+
+  const handleCnpjCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, '');
+    if (value.length > 11) {
+      setCnpjCpfMask("99.999.999/9999-99");
+    } else {
+      setCnpjCpfMask("999.999.999-999");
+    }
+    form.setValue("cnpjCpf", e.target.value);
+  };
+
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -135,21 +148,29 @@ export default function NewClientPage() {
                     )}
                     />
                     <FormField
-                    control={form.control}
-                    name="cnpjCpf"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>CNPJ / CPF</FormLabel>
-                        <FormControl>
-                            <Input 
-                            placeholder="00.000.000/0000-00" 
-                            {...field} 
-                            disabled={isPending}
-                            />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
+                      control={form.control}
+                      name="cnpjCpf"
+                      render={({ field }) => (
+                          <FormItem>
+                          <FormLabel>CNPJ / CPF</FormLabel>
+                          <FormControl>
+                            <InputMask
+                              mask={cnpjCpfMask}
+                              value={field.value}
+                              onChange={handleCnpjCpfChange}
+                              disabled={isPending}
+                            >
+                              {(inputProps: any) => (
+                                <Input
+                                  {...inputProps}
+                                  placeholder="00.000.000/0000-00"
+                                />
+                              )}
+                            </InputMask>
+                          </FormControl>
+                          <FormMessage />
+                          </FormItem>
+                      )}
                     />
                 </div>
                  <FormField
