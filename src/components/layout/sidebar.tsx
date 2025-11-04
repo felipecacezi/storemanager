@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Building, Home, Users, Settings, FileText, Truck } from "lucide-react";
+import { Building, Home, Users, Settings, FileText, Truck, ClipboardList } from "lucide-react";
 
 import {
   SidebarContent,
@@ -22,6 +22,7 @@ export function AppSidebar() {
     { href: "/dashboard", label: "Início", icon: Home },
     { href: "/dashboard/clients", label: "Clientes", icon: Users },
     { href: "/dashboard/suppliers", label: "Fornecedores", icon: Truck },
+    { href: "/dashboard/services", label: "Serviços", icon: ClipboardList },
     { href: "/dashboard/reports", label: "Relatórios", icon: FileText },
     { href: "/dashboard/settings", label: "Configurações", icon: Settings },
   ];
