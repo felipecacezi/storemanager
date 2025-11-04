@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Loader2, ChevronLeft } from "lucide-react";
-import InputMask from 'react-input-mask';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,9 +44,43 @@ const ClientSchema = z.object({
   status: z.enum(["Ativo", "Inativo"]),
 });
 
+const formatCnpjCpf = (value: string) => {
+  const cleanedValue = (value || '').replace(/\D/g, '');
+
+  if (cleanedValue.length <= 11) {
+    // CPF
+    return cleanedValue
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  } else {
+    // CNPJ
+    return cleanedValue
+      .slice(0, 14)
+      .replace(/(\d{2})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1/$2')
+      .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  }
+};
+
+const formatPhone = (value: string) => {
+  const cleanedValue = (value || '').replace(/\D/g, '');
+  if (cleanedValue.length <= 10) {
+    return cleanedValue
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{4})(\d)/, '$1-$2');
+  } else {
+    return cleanedValue
+      .slice(0, 11)
+      .replace(/(\d{2})(\d)/, '($1) $2')
+      .replace(/(\d{5})(\d)/, '$1-$2');
+  }
+};
+
+
 export default function NewClientPage() {
   const [isPending, startTransition] = React.useTransition();
-  const [cnpjCpfMask, setCnpjCpfMask] = React.useState("999.999.999-99");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -76,17 +109,6 @@ export default function NewClientPage() {
       router.push("/dashboard/clients");
     });
   };
-
-  const handleCnpjCpfChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
-    if (value.length > 11) {
-      setCnpjCpfMask("99.999.999/9999-99");
-    } else {
-      setCnpjCpfMask("999.999.999-99");
-    }
-    form.setValue("cnpjCpf", e.target.value);
-  };
-
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
@@ -154,21 +176,12 @@ export default function NewClientPage() {
                           <FormItem>
                           <FormLabel>CNPJ / CPF</FormLabel>
                           <FormControl>
-                            <InputMask
-                              mask={cnpjCpfMask}
-                              value={field.value}
-                              onChange={handleCnpjCpfChange}
-                              onBlur={field.onBlur}
+                            <Input
+                              {...field}
+                              placeholder="00.000.000/0000-00"
                               disabled={isPending}
-                            >
-                              {(inputProps: any) => (
-                                <Input
-                                  {...inputProps}
-                                  ref={field.ref}
-                                  placeholder="00.000.000/0000-00"
-                                />
-                              )}
-                            </InputMask>
+                              onChange={(e) => field.onChange(formatCnpjCpf(e.target.value))}
+                            />
                           </FormControl>
                           <FormMessage />
                           </FormItem>
@@ -182,21 +195,12 @@ export default function NewClientPage() {
                         <FormItem>
                         <FormLabel>Telefone</FormLabel>
                         <FormControl>
-                           <InputMask
-                              mask="(99) 99999-9999"
-                              value={field.value}
-                              onChange={field.onChange}
-                              onBlur={field.onBlur}
-                              disabled={isPending}
-                            >
-                              {(inputProps: any) => (
-                                <Input
-                                  {...inputProps}
-                                  ref={field.ref}
-                                  placeholder="(11) 98765-4321"
-                                />
-                              )}
-                            </InputMask>
+                           <Input
+                             {...field}
+                             placeholder="(11) 98765-4321"
+                             disabled={isPending}
+                             onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                           />
                         </FormControl>
                         <FormMessage />
                         </FormItem>
