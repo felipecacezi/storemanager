@@ -68,7 +68,7 @@ export function LoginForm() {
         </div>
         <CardTitle className="text-2xl font-bold font-headline">Login na Vitrine</CardTitle>
         <CardDescription>
-          Bem-vindo de volta! Por favor, insira seus detalhes.
+          Bem-vindo de volta!
         </CardDescription>
       </CardHeader>
       <CardContent>
