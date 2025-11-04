@@ -6,6 +6,7 @@ import {
   ListFilter,
   MoreHorizontal,
   PlusCircle,
+  MessageCircle
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
@@ -96,7 +97,7 @@ export default function ClientsPage() {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Nome</TableHead>
-                      <TableHead>Email</TableHead>
+                      <TableHead>Contato</TableHead>
                       <TableHead>CNPJ/CPF</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>
@@ -109,7 +110,13 @@ export default function ClientsPage() {
                       <TableCell className="font-medium">
                         Liam Johnson
                       </TableCell>
-                      <TableCell>liam@example.com</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          (11) 98877-6655
+                          <MessageCircle className="h-4 w-4 text-green-500" />
+                        </div>
+                         <div className="text-xs text-muted-foreground">liam@example.com</div>
+                      </TableCell>
                       <TableCell>12.345.678/0001-99</TableCell>
                       <TableCell>
                         <Badge variant="outline">Ativo</Badge>
@@ -138,7 +145,10 @@ export default function ClientsPage() {
                       <TableCell className="font-medium">
                         Olivia Smith
                       </TableCell>
-                      <TableCell>olivia@example.com</TableCell>
+                       <TableCell>
+                        <div>(11) 98877-6655</div>
+                         <div className="text-xs text-muted-foreground">olivia@example.com</div>
+                      </TableCell>
                       <TableCell>123.456.789-00</TableCell>
                       <TableCell>
                         <Badge variant="outline">Ativo</Badge>
@@ -167,7 +177,13 @@ export default function ClientsPage() {
                       <TableCell className="font-medium">
                         Noah Williams
                       </TableCell>
-                      <TableCell>noah@example.com</TableCell>
+                       <TableCell>
+                         <div className="flex items-center gap-2">
+                           (11) 98877-6655
+                          <MessageCircle className="h-4 w-4 text-green-500" />
+                        </div>
+                         <div className="text-xs text-muted-foreground">noah@example.com</div>
+                      </TableCell>
                       <TableCell>98.765.432/0001-11</TableCell>
                       <TableCell>
                         <Badge variant="destructive">Inativo</Badge>

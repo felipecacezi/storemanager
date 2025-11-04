@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, ChevronLeft } from "lucide-react";
+import { Loader2, ChevronLeft, MessageCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -33,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox";
 
 
 const ClientSchema = z.object({
@@ -40,6 +41,7 @@ const ClientSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um endereço de e-mail válido." }),
   cnpjCpf: z.string().optional(),
   phone: z.string().optional(),
+  isWhatsapp: z.boolean().default(false).optional(),
   address: z.string().optional(),
   status: z.enum(["Ativo", "Inativo"]),
 });
@@ -91,6 +93,7 @@ export default function NewClientPage() {
       email: "",
       cnpjCpf: "",
       phone: "",
+      isWhatsapp: false,
       address: "",
       status: "Ativo",
     },
@@ -102,6 +105,8 @@ export default function NewClientPage() {
       // Por enquanto, vamos apenas simular e mostrar uma notificação.
       await new Promise(resolve => setTimeout(resolve, 1000));
       
+      console.log(values);
+
       toast({
         title: "Cliente Adicionado!",
         description: `${values.name} foi adicionado com sucesso.`,
@@ -188,24 +193,45 @@ export default function NewClientPage() {
                       )}
                     />
                 </div>
-                 <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Telefone</FormLabel>
-                        <FormControl>
-                           <Input
-                             {...field}
-                             placeholder="(11) 98765-4321"
-                             disabled={isPending}
-                             onChange={(e) => field.onChange(formatPhone(e.target.value))}
-                           />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                    />
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                    <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Telefone</FormLabel>
+                            <FormControl>
+                               <Input
+                                 {...field}
+                                 placeholder="(11) 98765-4321"
+                                 disabled={isPending}
+                                 onChange={(e) => field.onChange(formatPhone(e.target.value))}
+                               />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                        />
+                    <FormField
+                        control={form.control}
+                        name="isWhatsapp"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center space-x-2 pb-2">
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                disabled={isPending}
+                                id="isWhatsapp"
+                              />
+                            </FormControl>
+                            <FormLabel htmlFor="isWhatsapp" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                                É WhatsApp?
+                            </FormLabel>
+                          </FormItem>
+                        )}
+                      />
+                </div>
                  <FormField
                     control={form.control}
                     name="address"
