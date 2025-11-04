@@ -8,11 +8,11 @@ export default function DashboardPage() {
     <main className="flex items-center justify-center min-h-screen p-4">
       <Card className="w-full max-w-lg text-center">
         <CardHeader>
-          <CardTitle className="text-3xl font-headline">Dashboard</CardTitle>
-          <CardDescription>Welcome to your StoreFront!</CardDescription>
+          <CardTitle className="text-3xl font-headline">Painel</CardTitle>
+          <CardDescription>Bem-vindo à sua vitrine!</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p>Your business overview and management tools are here.</p>
+          <p>Seu resumo de negócios e ferramentas de gerenciamento estão aqui.</p>
           <div className="flex justify-center gap-4">
             <LogoutButton />
           </div>
