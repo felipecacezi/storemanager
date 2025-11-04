@@ -15,19 +15,7 @@ export async function authenticate(values: z.infer<typeof LoginSchema>) {
     if (!validatedFields.success) {
         return { error: "Entrada inválida." };
     }
-
-    const { email, password } = validatedFields.data;
-
-    // Simulate authentication logic
-    if (email === "user@example.com" && password === "password") {
-        // Successful login, will redirect
-        console.log("Login bem-sucedido para:", email);
-    } else {
-        // Failed login
-        console.log("Falha no login para:", email);
-        return { error: "Email ou senha inválidos." };
-    }
     
-    // This part is only reached on success
+    // Para fins de demonstração, qualquer login é bem-sucedido.
     redirect('/dashboard');
 }
