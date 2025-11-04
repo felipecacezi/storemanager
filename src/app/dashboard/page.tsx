@@ -2,20 +2,171 @@ import { LogoutButton } from '@/components/auth/logout-button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { ArrowUpRight, DollarSign, Users, CreditCard } from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
 
 export default function DashboardPage() {
   return (
-    <main className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-lg text-center">
-        <CardHeader>
-          <CardTitle className="text-3xl font-headline">Painel</CardTitle>
-          <CardDescription>Bem-vindo ao seu AssistManager!</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p>Seu resumo de negócios e ferramentas de gerenciamento estão aqui.</p>
-          <div className="flex justify-center gap-4">
-            <LogoutButton />
+    <main className="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-8">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Receita Total
+            </CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">R$45.231,89</div>
+            <p className="text-xs text-muted-foreground">
+              +20.1% em relação ao mês passado
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Clientes
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+2350</div>
+            <p className="text-xs text-muted-foreground">
+              +180.1% em relação ao mês passado
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Vendas</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+12,234</div>
+            <p className="text-xs text-muted-foreground">
+              +19% em relação ao mês passado
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Taxa de Conversão
+            </CardTitle>
+            <ArrowUpRight className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">+573</div>
+            <p className="text-xs text-muted-foreground">
+              +201 desde a última hora
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+      <Card>
+        <CardHeader className="flex flex-row items-center">
+          <div className="grid gap-2">
+            <CardTitle>Transações</CardTitle>
+            <CardDescription>
+              Transações recentes da sua loja.
+            </CardDescription>
           </div>
+          <Button asChild size="sm" className="ml-auto gap-1">
+            <Link href="#">
+              Ver Tudo
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Cliente</TableHead>
+                <TableHead className="hidden xl:table-column">
+                  Tipo
+                </TableHead>
+                <TableHead className="hidden xl:table-column">
+                  Status
+                </TableHead>
+                <TableHead className="hidden xl:table-column">
+                  Data
+                </TableHead>
+                <TableHead className="text-right">Valor</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow>
+                <TableCell>
+                  <div className="font-medium">Liam Johnson</div>
+                  <div className="hidden text-sm text-muted-foreground md:inline">
+                    liam@example.com
+                  </div>
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  Venda
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  <Badge className="text-xs" variant="outline">
+                    Aprovado
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
+                  2023-06-23
+                </TableCell>
+                <TableCell className="text-right">R$250.00</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <div className="font-medium">Olivia Smith</div>
+                  <div className="hidden text-sm text-muted-foreground md:inline">
+                    olivia@example.com
+                  </div>
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  Reembolso
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  <Badge className="text-xs" variant="outline">
+                    Recusado
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
+                  2023-06-24
+                </TableCell>
+                <TableCell className="text-right">R$150.00</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>
+                  <div className="font-medium">Noah Williams</div>
+                  <div className="hidden text-sm text-muted-foreground md:inline">
+                    noah@example.com
+                  </div>
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  Assinatura
+                </TableCell>
+                <TableCell className="hidden xl:table-column">
+                  <Badge className="text-xs" variant="outline">
+                    Aprovado
+                  </Badge>
+                </TableCell>
+                <TableCell className="hidden md:table-cell lg:hidden xl:table-column">
+                  2023-06-25
+                </TableCell>
+                <TableCell className="text-right">R$350.00</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </main>
