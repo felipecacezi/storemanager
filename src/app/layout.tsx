@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'Login na Vitrine',
-  description: 'Faça login na sua conta da Vitrine',
+  title: 'Login no AssistManager',
+  description: 'Faça login na sua conta do AssistManager',
 };
 
 export default function RootLayout({

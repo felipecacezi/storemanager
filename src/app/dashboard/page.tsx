@@ -9,7 +9,7 @@ export default function DashboardPage() {
       <Card className="w-full max-w-lg text-center">
         <CardHeader>
           <CardTitle className="text-3xl font-headline">Painel</CardTitle>
-          <CardDescription>Bem-vindo à sua vitrine!</CardDescription>
+          <CardDescription>Bem-vindo ao seu AssistManager!</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <p>Seu resumo de negócios e ferramentas de gerenciamento estão aqui.</p>

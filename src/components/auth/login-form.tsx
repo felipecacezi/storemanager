@@ -66,7 +66,7 @@ export function LoginForm() {
         <div className="flex justify-center mb-4">
             <Building className="h-12 w-12 text-primary" />
         </div>
-        <CardTitle className="text-2xl font-bold font-headline">Login na Vitrine</CardTitle>
+        <CardTitle className="text-2xl font-bold font-headline">Login no AssistManager</CardTitle>
         <CardDescription>
           Bem-vindo de volta!
         </CardDescription>
