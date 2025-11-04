@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, User, Mail, Phone, Home, ChevronLeft, FileText } from "lucide-react";
+import { Loader2, ChevronLeft } from "lucide-react";
 import InputMask from 'react-input-mask';
 
 import { Button } from "@/components/ui/button";
@@ -47,7 +47,7 @@ const ClientSchema = z.object({
 
 export default function NewClientPage() {
   const [isPending, startTransition] = React.useTransition();
-  const [cnpjCpfMask, setCnpjCpfMask] = React.useState("999.999.999-999");
+  const [cnpjCpfMask, setCnpjCpfMask] = React.useState("999.999.999-99");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -82,7 +82,7 @@ export default function NewClientPage() {
     if (value.length > 11) {
       setCnpjCpfMask("99.999.999/9999-99");
     } else {
-      setCnpjCpfMask("999.999.999-999");
+      setCnpjCpfMask("999.999.999-99");
     }
     form.setValue("cnpjCpf", e.target.value);
   };
@@ -158,14 +158,13 @@ export default function NewClientPage() {
                               mask={cnpjCpfMask}
                               value={field.value}
                               onChange={handleCnpjCpfChange}
+                              onBlur={field.onBlur}
                               disabled={isPending}
                             >
-                              {(inputProps: any) => (
-                                <Input
-                                  {...inputProps}
+                               <Input
+                                  ref={field.ref}
                                   placeholder="00.000.000/0000-00"
                                 />
-                              )}
                             </InputMask>
                           </FormControl>
                           <FormMessage />
@@ -180,11 +179,18 @@ export default function NewClientPage() {
                         <FormItem>
                         <FormLabel>Telefone</FormLabel>
                         <FormControl>
-                            <Input 
-                            placeholder="(11) 98765-4321" 
-                            {...field} 
-                            disabled={isPending}
-                            />
+                           <InputMask
+                              mask="(99) 99999-9999"
+                              value={field.value}
+                              onChange={field.onChange}
+                              onBlur={field.onBlur}
+                              disabled={isPending}
+                            >
+                               <Input
+                                  ref={field.ref}
+                                  placeholder="(11) 98765-4321"
+                                />
+                            </InputMask>
                         </FormControl>
                         <FormMessage />
                         </FormItem>
