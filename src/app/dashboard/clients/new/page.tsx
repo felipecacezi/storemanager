@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { Loader2, User, Mail, Phone, Home, ChevronLeft } from "lucide-react";
+import { Loader2, User, Mail, Phone, Home, ChevronLeft, FileText } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +38,7 @@ import {
 const ClientSchema = z.object({
   name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres." }),
   email: z.string().email({ message: "Por favor, insira um endereço de e-mail válido." }),
+  cnpjCpf: z.string().optional(),
   phone: z.string().optional(),
   address: z.string().optional(),
   status: z.enum(["Ativo", "Inativo"]),
@@ -53,6 +54,7 @@ export default function NewClientPage() {
     defaultValues: {
       name: "",
       email: "",
+      cnpjCpf: "",
       phone: "",
       address: "",
       status: "Ativo",
@@ -101,7 +103,7 @@ export default function NewClientPage() {
                 name="name"
                 render={({ field }) => (
                     <FormItem>
-                    <FormLabel>Nome Completo</FormLabel>
+                    <FormLabel>Nome Completo / Razão Social</FormLabel>
                     <FormControl>
                         <Input 
                         placeholder="Ex: João da Silva" 
@@ -134,6 +136,24 @@ export default function NewClientPage() {
                     />
                     <FormField
                     control={form.control}
+                    name="cnpjCpf"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>CNPJ / CPF</FormLabel>
+                        <FormControl>
+                            <Input 
+                            placeholder="00.000.000/0000-00" 
+                            {...field} 
+                            disabled={isPending}
+                            />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+                </div>
+                 <FormField
+                    control={form.control}
                     name="phone"
                     render={({ field }) => (
                         <FormItem>
@@ -149,7 +169,6 @@ export default function NewClientPage() {
                         </FormItem>
                     )}
                     />
-                </div>
                  <FormField
                     control={form.control}
                     name="address"

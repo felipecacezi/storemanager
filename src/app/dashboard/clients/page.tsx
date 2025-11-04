@@ -3,29 +3,12 @@
 import Link from 'next/link';
 import {
   File,
-  Home,
-  LineChart,
   ListFilter,
   MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
   PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users2,
 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import {
   Card,
   CardContent,
@@ -114,7 +97,7 @@ export default function ClientsPage() {
                     <TableRow>
                       <TableHead>Nome</TableHead>
                       <TableHead>Email</TableHead>
-                      <TableHead>Telefone</TableHead>
+                      <TableHead>CNPJ/CPF</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>
                         <span className="sr-only">Ações</span>
@@ -127,7 +110,7 @@ export default function ClientsPage() {
                         Liam Johnson
                       </TableCell>
                       <TableCell>liam@example.com</TableCell>
-                      <TableCell>(11) 98765-4321</TableCell>
+                      <TableCell>12.345.678/0001-99</TableCell>
                       <TableCell>
                         <Badge variant="outline">Ativo</Badge>
                       </TableCell>
@@ -156,7 +139,7 @@ export default function ClientsPage() {
                         Olivia Smith
                       </TableCell>
                       <TableCell>olivia@example.com</TableCell>
-                      <TableCell>(21) 91234-5678</TableCell>
+                      <TableCell>123.456.789-00</TableCell>
                       <TableCell>
                         <Badge variant="outline">Ativo</Badge>
                       </TableCell>
@@ -185,7 +168,7 @@ export default function ClientsPage() {
                         Noah Williams
                       </TableCell>
                       <TableCell>noah@example.com</TableCell>
-                      <TableCell>(31) 98888-7777</TableCell>
+                      <TableCell>98.765.432/0001-11</TableCell>
                       <TableCell>
                         <Badge variant="destructive">Inativo</Badge>
                       </TableCell>
