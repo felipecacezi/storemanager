@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -36,6 +37,7 @@ const LoginSchema = z.object({
 
 export function LoginForm() {
   const [isPending, startTransition] = React.useTransition();
+  const router = useRouter();
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -49,14 +51,30 @@ export function LoginForm() {
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
     startTransition(async () => {
-      const result = await authenticate(values);
-      if (result?.error) {
-        toast({
-          variant: "destructive",
-          title: "Falha no Login",
-          description: result.error,
-        });
-      }
+
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(values),
+      }).then((res) => res.json()).then((data) => {
+        if (data.error) {
+          toast({
+            variant: "destructive",
+            title: "Falha no Login",
+            description: data.error,
+          });
+        } else {
+          toast({
+            variant: "default",
+            title: "Login realizado com sucesso",
+            description: "Bem-vindo de volta!",
+          });
+          router.push("/dashboard");
+        }
+      })
+
     });
   };
 
@@ -64,7 +82,7 @@ export function LoginForm() {
     <Card className="w-full max-w-sm shadow-2xl">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
-            <Building className="h-12 w-12 text-primary" />
+          <Building className="h-12 w-12 text-primary" />
         </div>
         <CardTitle className="text-2xl font-bold font-headline">Login no AssistManager</CardTitle>
         <CardDescription>
@@ -83,10 +101,10 @@ export function LoginForm() {
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <FormControl>
-                      <Input 
-                        type="email" 
-                        placeholder="nome@exemplo.com" 
-                        {...field} 
+                      <Input
+                        type="email"
+                        placeholder="nome@exemplo.com"
+                        {...field}
                         className="pl-10"
                         disabled={isPending}
                       />
@@ -102,13 +120,13 @@ export function LoginForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
-                   <div className="relative">
+                  <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        {...field} 
+                      <Input
+                        type="password"
+                        placeholder="••••••••"
+                        {...field}
                         className="pl-10"
                         disabled={isPending}
                       />
@@ -132,7 +150,7 @@ export function LoginForm() {
                       />
                     </FormControl>
                     <FormLabel className="font-normal">
-                        Lembrar de mim
+                      Lembrar de mim
                     </FormLabel>
                   </FormItem>
                 )}
