@@ -17,14 +17,52 @@ function isTokenValid(token: string) {
     }
 }
 
-export function middleware(request: NextRequest) {
+async function shouldRedirectToCompanySetup(request: NextRequest) {
     const token = request.cookies.get('token')?.value;
+    if (!token) return false;
 
-    if (request.nextUrl.pathname.startsWith('/dashboard')) {
+    try {
+        const response = await fetch(`${request.nextUrl.origin}/api/settings/company/status`, {
+            headers: {
+                cookie: request.headers.get('cookie') ?? '',
+            },
+            cache: 'no-store',
+        });
+
+        if (!response.ok) return false;
+        const data = await response.json();
+        return !data?.hasCompany;
+    } catch {
+        return false;
+    }
+}
+
+export async function middleware(request: NextRequest) {
+    const token = request.cookies.get('token')?.value;
+    const pathname = request.nextUrl.pathname;
+
+    if (pathname.startsWith('/dashboard')) {
         if (!token || !isTokenValid(token)) {
             const response = NextResponse.redirect(new URL('/', request.url));
             response.cookies.delete('token');
             return response;
+        }
+
+        const companyMissing = await shouldRedirectToCompanySetup(request);
+
+        if (companyMissing && !pathname.startsWith('/dashboard/settings')) {
+            const target = new URL('/dashboard/settings', request.url);
+            target.searchParams.set('tab', 'company');
+            return NextResponse.redirect(target);
+        }
+
+        if (companyMissing && pathname.startsWith('/dashboard/settings')) {
+            const currentTab = request.nextUrl.searchParams.get('tab');
+            if (currentTab !== 'company') {
+                const target = request.nextUrl.clone();
+                target.searchParams.set('tab', 'company');
+                return NextResponse.redirect(target);
+            }
         }
     }
 

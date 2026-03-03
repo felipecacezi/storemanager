@@ -15,9 +15,12 @@ import {
 } from "@/components/ui/sidebar";
 import { LogoutButton } from "../auth/logout-button";
 
-export function AppSidebar() {
+type AppSidebarProps = {
+  companyLocked?: boolean;
+};
+
+export function AppSidebar({ companyLocked = false }: AppSidebarProps) {
   const pathname = usePathname();
-  
   const menuItems = [
     { href: "/dashboard", label: "Início", icon: Home },
     { href: "/dashboard/clients", label: "Clientes", icon: Users },
@@ -41,16 +44,30 @@ export function AppSidebar() {
         <SidebarMenu>
           {menuItems.map((item) => (
             <SidebarMenuItem key={item.href}>
-              <Link href={item.href}>
+              {companyLocked && item.href !== "/dashboard/settings" ? (
                 <SidebarMenuButton
-                  isActive={pathname.startsWith(item.href)}
-                  icon={<item.icon />}
-                  tooltip={item.label}
-                  asChild
+                  isActive={false}
+                  disabled
+                  tooltip="Finalize o cadastro da empresa para acessar."
+                  className="opacity-60 cursor-not-allowed"
                 >
-                  <span>{item.label}</span>
+                  <span className="flex items-center gap-2">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span>{item.label}</span>
+                  </span>
                 </SidebarMenuButton>
-              </Link>
+              ) : (
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith(item.href)}
+                  tooltip={item.label}
+                >
+                  <Link href={item.href} className="flex items-center gap-2">
+                    <item.icon className="h-4 w-4 shrink-0" />
+                    <span>{item.label}</span>
+                  </Link>
+                </SidebarMenuButton>
+              )}
             </SidebarMenuItem>
           ))}
         </SidebarMenu>

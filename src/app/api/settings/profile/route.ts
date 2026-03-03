@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function PUT(request: NextRequest) {
+export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
     const cookieStore = await cookies();
@@ -12,27 +12,45 @@ export async function PUT(request: NextRequest) {
     }
 
     const apiBaseUrl = process.env.API_BASE_URL;
-    const externalResponse = await fetch(`${apiBaseUrl}/profile`, {
-      method: "PUT",
+    if (!apiBaseUrl) {
+      return NextResponse.json({ error: "Configuração do servidor inválida." }, { status: 500 });
+    }
+
+    const payload: Record<string, unknown> = {
+      email: body.email,
+    };
+
+    if (body.password) {
+      payload.password = body.password;
+      payload.confirm_password = body.confirmPassword;
+    }
+
+    const externalResponse = await fetch(`${apiBaseUrl}/user`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(payload),
     });
 
-    const payload = await externalResponse.json();
+    const responseBody = await externalResponse.json();
 
     if (!externalResponse.ok) {
       return NextResponse.json(
-        { error: payload?.message || "Erro ao atualizar perfil." },
+        { error: responseBody?.message || "Erro ao atualizar perfil." },
         { status: externalResponse.status }
       );
     }
 
-    // Atualiza o token se a API retornar um novo
-    if (payload.token) {
-      cookieStore.set("token", payload.token, {
+    const authorizationHeader =
+      externalResponse.headers.get("authorization") ??
+      externalResponse.headers.get("Authorization");
+    const newToken = authorizationHeader?.replace(/^Bearer\s*/i, "").trim();
+
+    if (newToken) {
+      cookieStore.delete("token");
+      cookieStore.set("token", newToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
@@ -41,7 +59,7 @@ export async function PUT(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ success: true, data: payload.data });
+    return NextResponse.json({ success: true, data: responseBody.data });
   } catch (error) {
     return NextResponse.json(
       { error: "Erro interno do servidor." },
